@@ -1,12 +1,17 @@
 <?php
+
 $host = "localhost";
-$user = "root";
-$pass = "";
-$db = "jgarcia_db";
+$port = "5432";
+$dbname = "jgarcia3_db";
+$user = "jgarcia";
+$pass = "12345";
 
-$conn = new mysqli($host, $user, $pass, $db);
+$conn = pg_connect(
+    "host=$host port=$port dbname=$dbname user=$user password=$pass"
+);
 
-if ($conn->connect_error) {
+if(!$conn){
     die("Error de conexión");
 }
+
 ?>
