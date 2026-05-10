@@ -3,27 +3,28 @@ include "db.php";
 
 if(isset($_FILES['imagen']) && $_FILES['imagen']['error'] === 0){
 
-    $nombre = time() . "_" . $_FILES['imagen']['name']; // evitar duplicados
+    $nombre = time() . "_" . $_FILES['imagen']['name'];
     $ruta = "uploads/" . $nombre;
 
-    // Crear carpeta si no existe
     if(!is_dir("uploads")){
         mkdir("uploads", 0777, true);
     }
 
     if(move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta)){
 
-        $stmt = $conn->prepare("INSERT INTO imagenes (nombre, ruta) VALUES (?, ?)");
-        $stmt->bind_param("ss", $nombre, $ruta);
+        $result = pg_query_params(
+            $conn,
+            "INSERT INTO imagenes (nombre, ruta) VALUES ($1, $2)",
+            array($nombre, $ruta)
+        );
 
-        if($stmt->execute()){
+        if($result){
             header("Location: galeria.php");
-            exit;
+            exit();
         } else {
-            echo "Error al guardar en BD";
+            die(pg_last_error($conn));
         }
 
-        $stmt->close();
     } else {
         echo "Error al subir archivo";
     }

@@ -7,17 +7,18 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email=?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $result = pg_query_params(
+        $conn,
+        "SELECT * FROM usuarios WHERE email = $1",
+        array($email)
+    );
 
-    if($user = $result->fetch_assoc()){
+    if($user = pg_fetch_assoc($result)){
         if(password_verify($password, $user['password'])){
             $_SESSION['id'] = $user['id'];
             $_SESSION['nombre'] = $user['nombre'];
             header("Location: index.php");
-            exit;
+            exit();
         } else {
             $error = "Contraseña incorrecta";
         }
@@ -26,7 +27,6 @@ if(isset($_POST['email']) && isset($_POST['password'])){
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>

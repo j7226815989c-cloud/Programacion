@@ -5,11 +5,14 @@ if(isset($_POST['id'])){
 
     $id = $_POST['id'];
 
-    $stmt = $conn->prepare("SELECT ruta FROM imagenes WHERE id=?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $data = $res->fetch_assoc();
+    // obtener ruta
+    $res = pg_query_params(
+        $conn,
+        "SELECT ruta FROM imagenes WHERE id = $1",
+        array($id)
+    );
+
+    $data = pg_fetch_assoc($res);
 
     if($data){
         $ruta = $data['ruta'];
@@ -18,12 +21,15 @@ if(isset($_POST['id'])){
             unlink($ruta);
         }
 
-        $stmt = $conn->prepare("DELETE FROM imagenes WHERE id=?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
+        // eliminar registro
+        pg_query_params(
+            $conn,
+            "DELETE FROM imagenes WHERE id = $1",
+            array($id)
+        );
     }
 
     header("Location: index.php");
-    exit;
+    exit();
 }
 ?>

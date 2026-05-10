@@ -2,17 +2,16 @@
 session_start();
 include "db.php";
 
-$result = $conn->query("SELECT id, ruta FROM imagenes");
+$result = pg_query($conn, "SELECT id, ruta FROM imagenes");
 
 $imgs = [];
 $ids = [];
 
-while ($row = $result->fetch_assoc()) {
+while ($row = pg_fetch_assoc($result)) {
     $imgs[] = $row['ruta'];
     $ids[] = $row['id'];
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <body style="text-align:center;background:#111;color:#fff;">

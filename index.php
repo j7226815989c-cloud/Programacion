@@ -7,9 +7,8 @@ if(!isset($_SESSION['id'])){
     exit();
 }
 
-$result = $conn->query("SELECT id, ruta FROM imagenes");
+$result = pg_query($conn, "SELECT id, ruta FROM imagenes");
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -103,37 +102,36 @@ body{
 <div id="carouselExample" class="carousel slide" style="max-width:600px; margin:auto;">
   <div class="carousel-inner">
 
-    <?php
-    $active = true;
+<?php
+$active = true;
 
-    while($row = $result->fetch_assoc()){
-        echo '<div class="carousel-item '.($active ? 'active' : '').'">';
+while($row = pg_fetch_assoc($result)){
+    echo '<div class="carousel-item '.($active ? 'active' : '').'">';
 
-        echo '
-        <div class="d-flex flex-column align-items-center">
+    echo '
+    <div class="d-flex flex-column align-items-center">
 
-            <!-- IMAGEN -->
-            <img src="'.$row['ruta'].'" 
-                 class="img-fluid rounded"
-                 style="max-height:400px; object-fit:contain;">
+        <!-- IMAGEN -->
+        <img src="'.$row['ruta'].'"
+             class="img-fluid rounded"
+             style="max-height:400px; object-fit:contain;">
 
-            <!-- BOTÓN ABAJO -->
-            <form action="delete.php" method="POST" 
-                  onsubmit="return confirm(\'¿Eliminar esta imagen?\');"
-                  class="mt-3">
+        <!-- BOTÓN ABAJO -->
+        <form action="delete.php" method="POST"
+              onsubmit="return confirm(\'¿Eliminar esta imagen?\');"
+              class="mt-3">
 
-                <input type="hidden" name="id" value="'.$row['id'].'">
-                <button class="btn btn-danger">🗑 Eliminar</button>
-            </form>
+            <input type="hidden" name="id" value="'.$row['id'].'">
+            <button class="btn btn-danger">🗑 Eliminar</button>
+        </form>
 
-        </div>
-        ';
+    </div>
+    ';
 
-        echo '</div>';
-        $active = false;
-    }
-    ?>
-
+    echo '</div>';
+    $active = false;
+}
+?>
   </div>
 
   <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">

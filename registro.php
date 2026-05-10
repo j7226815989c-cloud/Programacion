@@ -7,18 +7,20 @@ if(isset($_POST['nombre']) && isset($_POST['email']) && isset($_POST['password']
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $nombre, $email, $password);
+    $result = pg_query_params(
+        $conn,
+        "INSERT INTO usuarios (nombre, email, password) VALUES ($1, $2, $3)",
+        array($nombre, $email, $password)
+    );
 
-    if($stmt->execute()){
+    if($result){
         header("Location: login.php");
-        exit;
+        exit();
     } else {
-        $error = "Error al registrar";
+        die(pg_last_error($conn));
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
