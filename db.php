@@ -1,12 +1,14 @@
 <?php
+
 $host = "localhost";
-$user = "root";
-$pass = "";
-$db = "jgarcia_db";
+$dbname = "proyectojaz_db";
+$user = "jaz_db";
+$pass = "12345678";
 
-$conn = new mysqli($host, $user, $pass, $db);
+$conn = mysqli_connect($host, $user, $pass, $dbname);
 
-if ($conn->connect_error) {
-    die("Error de conexión");
+if(!$conn){
+    die("Error de conexión: " . mysqli_connect_error());
 }
+
 ?>

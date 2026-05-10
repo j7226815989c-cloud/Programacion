@@ -6,8 +6,6 @@ if(!isset($_SESSION['id'])){
     header("Location: login.php");
     exit();
 }
-
-$result = $conn->query("SELECT id, ruta FROM imagenes");
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +61,6 @@ body{
     color:white;
 }
 
-/* 🔥 ARREGLO */
 .carousel-item{
     text-align:center;
 }
@@ -73,7 +70,7 @@ body{
 
 <body>
 
-<!-- MENÚ -->
+<!-- MENÚ  -->
 <div class="sidebar">
     <h2>Menú</h2>
     <hr>
@@ -100,49 +97,41 @@ body{
 
 <br>
 
+<!--  CARRUSEL AJAX -->
 <div id="carouselExample" class="carousel slide" style="max-width:600px; margin:auto;">
+  
   <div class="carousel-inner">
+    
+    <div class="carousel-item active">
+      <div class="d-flex flex-column align-items-center">
 
-    <?php
-    $active = true;
+        <!-- SOLO ESTO CAMBIA -->
+        <img id="img" 
+             class="img-fluid rounded"
+             style="max-height:400px; object-fit:contain;">
 
-    while($row = $result->fetch_assoc()){
-        echo '<div class="carousel-item '.($active ? 'active' : '').'">';
+        <form action="delete.php" method="POST"
+              onsubmit="return confirm('¿Eliminar esta imagen?');"
+              class="mt-3">
 
-        echo '
-        <div class="d-flex flex-column align-items-center">
+            <input type="hidden" name="id" id="img_id">
+            <button class="btn btn-danger">🗑 Eliminar</button>
+        </form>
 
-            <!-- IMAGEN -->
-            <img src="'.$row['ruta'].'" 
-                 class="img-fluid rounded"
-                 style="max-height:400px; object-fit:contain;">
-
-            <!-- BOTÓN ABAJO -->
-            <form action="delete.php" method="POST" 
-                  onsubmit="return confirm(\'¿Eliminar esta imagen?\');"
-                  class="mt-3">
-
-                <input type="hidden" name="id" value="'.$row['id'].'">
-                <button class="btn btn-danger">🗑 Eliminar</button>
-            </form>
-
-        </div>
-        ';
-
-        echo '</div>';
-        $active = false;
-    }
-    ?>
+      </div>
+    </div>
 
   </div>
 
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+  <!-- BOTONES -->
+  <button class="carousel-control-prev" type="button" onclick="prev()">
     <span class="carousel-control-prev-icon"></span>
   </button>
 
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+  <button class="carousel-control-next" type="button" onclick="next()">
     <span class="carousel-control-next-icon"></span>
   </button>
+
 </div>
 
 <br><br>
@@ -157,6 +146,40 @@ body{
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+<!--  AJAX -->
+<script>
+let i = 0;
+
+function cargarImagen(){
+
+    fetch("get_image.php?index=" + i)
+    .then(res => res.json())
+    .then(data => {
+
+        if(data){
+            document.getElementById("img").src = data.ruta;
+            document.getElementById("img_id").value = data.id;
+        }else{
+            document.getElementById("img").src = "";
+        }
+
+    });
+
+}
+
+function next(){
+    i++;
+    cargarImagen();
+}
+
+function prev(){
+    i--;
+    cargarImagen();
+}
+
+// cargar primera imagen
+cargarImagen();
+</script>
+
 </body>
-</html>
 </html>

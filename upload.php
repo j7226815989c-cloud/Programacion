@@ -1,31 +1,17 @@
 <?php
 include "db.php";
 
-if(isset($_FILES['imagen']) && $_FILES['imagen']['error'] === 0){
+if(isset($_FILES['imagen'])){
 
-    $nombre = time() . "_" . $_FILES['imagen']['name']; // evitar duplicados
-    $ruta = "uploads/" . $nombre;
+    $nombre = $_FILES['imagen']['name'];
+    $tmp = $_FILES['imagen']['tmp_name'];
 
-    // Crear carpeta si no existe
-    if(!is_dir("uploads")){
-        mkdir("uploads", 0777, true);
-    }
+    $ruta = "uploads/" . time() . "_" . $nombre;
 
-    if(move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta)){
+    move_uploaded_file($tmp, $ruta);
 
-        $stmt = $conn->prepare("INSERT INTO imagenes (nombre, ruta) VALUES (?, ?)");
-        $stmt->bind_param("ss", $nombre, $ruta);
-
-        if($stmt->execute()){
-            header("Location: galeria.php");
-            exit;
-        } else {
-            echo "Error al guardar en BD";
-        }
-
-        $stmt->close();
-    } else {
-        echo "Error al subir archivo";
-    }
+    $conn->query("INSERT INTO imagenes (ruta) VALUES ('$ruta')");
 }
+
+header("Location: index.php");
 ?>
