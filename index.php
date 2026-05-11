@@ -9,8 +9,9 @@ if(!isset($_SESSION['id'])){
 
 $result = pg_query($conn, "SELECT id, ruta FROM imagenes");
 ?>
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <title>Carrusel</title>
@@ -18,6 +19,7 @@ $result = pg_query($conn, "SELECT id, ruta FROM imagenes");
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
+
 body{
     margin:0;
     display:flex;
@@ -60,12 +62,19 @@ body{
     text-align:center;
     background:#111;
     color:white;
+    min-height:100vh;
 }
 
-/* 🔥 ARREGLO */
+/* CARRUSEL */
 .carousel-item{
     text-align:center;
 }
+
+.carousel-item img{
+    max-height:400px;
+    object-fit:contain;
+}
+
 </style>
 
 </head>
@@ -74,87 +83,122 @@ body{
 
 <!-- MENÚ -->
 <div class="sidebar">
+
     <h2>Menú</h2>
     <hr>
 
     <a href="index.php" class="active">Carrusel</a>
-    <a href="diseño_ajustable.html" class="active">Diseño ajustable</a>
-    <a href="listas.html" class="active">Listas</a>
-    <a href="contenido.html" class="active">Contenido</a>
-    <a href="links.html" class="active">Links</a>
-    <a href="modelcaja.html" class="active">Modelo de Caja</a>
+    <a href="diseño_ajustable.html">Diseño ajustable</a>
+    <a href="listas.html">Listas</a>
+    <a href="contenido.html">Contenido</a>
+    <a href="links.html">Links</a>
+    <a href="modelcaja.html">Modelo de Caja</a>
     <a href="#">JavaScript</a>
     <a href="#">Slider</a>
     <a href="#">Perfil</a>
 
     <br><br>
-    <a href="logout.php" style="color:red;">Cerrar sesión</a>
+
+    <a href="logout.php" style="color:red;">
+        Cerrar sesión
+    </a>
+
 </div>
 
 <!-- CONTENIDO -->
 <div class="content">
 
-<h2>Bienvenido <?php echo $_SESSION['nombre']; ?></h2>
-<h3>Carrusel</h3>
+    <h2>Bienvenido <?php echo $_SESSION['nombre']; ?></h2>
+    <h3>Carrusel</h3>
 
-<br>
+    <br>
 
-<div id="carouselExample" class="carousel slide" style="max-width:600px; margin:auto;">
-  <div class="carousel-inner">
+    <!-- CARRUSEL -->
+    <div id="carouselExample"
+         class="carousel slide"
+         style="max-width:600px; margin:auto;">
 
-<?php
-$active = true;
+        <div class="carousel-inner">
 
-while($row = pg_fetch_assoc($result)){
-    echo '<div class="carousel-item '.($active ? 'active' : '').'">';
+        <?php
+        $active = true;
 
-    echo '
-    <div class="d-flex flex-column align-items-center">
+        while($row = pg_fetch_assoc($result)){
 
-        <!-- IMAGEN -->
-        <img src="'.$row['ruta'].'"
-             class="img-fluid rounded"
-             style="max-height:400px; object-fit:contain;">
+            echo '<div class="carousel-item '.($active ? 'active' : '').'">';
 
-        <!-- BOTÓN ABAJO -->
-        <form action="delete.php" method="POST"
-              onsubmit="return confirm(\'¿Eliminar esta imagen?\');"
-              class="mt-3">
+            echo '
+            <div class="d-flex flex-column align-items-center">
 
-            <input type="hidden" name="id" value="'.$row['id'].'">
-            <button class="btn btn-danger">🗑 Eliminar</button>
-        </form>
+                <img src="'.$row['ruta'].'"
+                     class="img-fluid rounded">
+
+                <form action="delete.php"
+                      method="POST"
+                      onsubmit="return confirm(\'¿Eliminar esta imagen?\');"
+                      class="mt-3">
+
+                    <input type="hidden"
+                           name="id"
+                           value="'.$row['id'].'">
+
+                    <button class="btn btn-danger">
+                        🗑 Eliminar
+                    </button>
+
+                </form>
+
+            </div>
+            ';
+
+            echo '</div>';
+
+            $active = false;
+        }
+        ?>
+
+        </div>
+
+        <!-- BOTÓN ANTERIOR -->
+        <button class="carousel-control-prev"
+                type="button"
+                data-bs-target="#carouselExample"
+                data-bs-slide="prev">
+
+            <span class="carousel-control-prev-icon"></span>
+
+        </button>
+
+        <!-- BOTÓN SIGUIENTE -->
+        <button class="carousel-control-next"
+                type="button"
+                data-bs-target="#carouselExample"
+                data-bs-slide="next">
+
+            <span class="carousel-control-next-icon"></span>
+
+        </button>
 
     </div>
-    ';
 
-    echo '</div>';
-    $active = false;
-}
-?>
-  </div>
+    <br><br>
 
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
+    <!-- SUBIR IMAGEN -->
+    <form action="upload.php"
+          method="POST"
+          enctype="multipart/form-data">
 
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
-</div>
+        <input type="file" name="imagen" required>
 
-<br><br>
+        <button class="btn btn-success">
+            Subir imagen
+        </button>
 
-<!-- SUBIR -->
-<form action="upload.php" method="POST" enctype="multipart/form-data">
-    <input type="file" name="imagen" required>
-    <button class="btn btn-success">Subir imagen</button>
-</form>
+    </form>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
-</html>
 </html>
