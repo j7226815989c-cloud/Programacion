@@ -1,19 +1,28 @@
 <?php
 include "db.php";
 
-$id = $_POST['id'];
+if(isset($_POST['id'])){
 
-// Opcional: borrar archivo físico
-$result = $conn->query("SELECT ruta FROM imagenes WHERE id=$id");
-$row = $result->fetch_assoc();
+    $id = $_POST['id'];
 
-if($row){
-    if(file_exists($row['ruta'])){
-        unlink($row['ruta']);
+    $stmt = $conn->prepare("SELECT ruta FROM imagenes WHERE id=?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $data = $res->fetch_assoc();
+
+    if($data){
+        $ruta = $data['ruta'];
+
+        if(file_exists($ruta)){
+            unlink($ruta);
+        }
+
+        $stmt = $conn->prepare("DELETE FROM imagenes WHERE id=?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
     }
+
+    header("Location: index.php");
+    exit;
 }
-
-$conn->query("DELETE FROM imagenes WHERE id=$id");
-
-header("Location: index.php");
-?>
