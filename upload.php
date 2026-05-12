@@ -12,21 +12,12 @@ if(isset($_FILES['imagen']) && $_FILES['imagen']['error'] === 0){
 
     if(move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta)){
 
-        $result = pg_query_params(
-            $conn,
-            "INSERT INTO imagenes (nombre, ruta) VALUES ($1, $2)",
-            array($nombre, $ruta)
+        pg_query_params($conn,
+            "INSERT INTO imagenes(ruta) VALUES($1)",
+            array($ruta)
         );
-
-        if($result){
-            header("Location: galeria.php");
-            exit();
-        } else {
-            die(pg_last_error($conn));
-        }
-
-    } else {
-        echo "Error al subir archivo";
     }
 }
+
+header("Location: index.php");
 ?>

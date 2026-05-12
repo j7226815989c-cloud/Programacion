@@ -12,6 +12,7 @@ while ($row = pg_fetch_assoc($result)) {
     $ids[] = $row['id'];
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <body style="text-align:center;background:#111;color:#fff;">
@@ -23,7 +24,6 @@ while ($row = pg_fetch_assoc($result)) {
 
 <img id="img" width="400"><br><br>
 
-<!-- BOTÓN BORRAR (dentro de galería) -->
 <form action="delete.php" method="POST" onsubmit="return confirm('¿Eliminar imagen?');">
     <input type="hidden" name="id" id="img_id">
     <button style="background:red;color:white;">Eliminar imagen</button>
@@ -46,8 +46,6 @@ function show(){
     if(imgs.length > 0){
         document.getElementById("img").src = imgs[i];
         document.getElementById("img_id").value = ids[i];
-    } else {
-        document.getElementById("img").src = "";
     }
 }
 
