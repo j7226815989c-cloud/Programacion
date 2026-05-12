@@ -6,15 +6,13 @@ if(!isset($_SESSION['id'])){
     header("Location: login.php");
     exit();
 }
-
-$result = pg_query($conn, "SELECT id, ruta FROM imagenes");
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Carrusel</title>
+<title>Carrusel PostgreSQL AJAX</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -72,17 +70,17 @@ body{
 
 <body>
 
-<!-- MENÚ -->
+<!-- SIDEBAR -->
 <div class="sidebar">
     <h2>Menú</h2>
     <hr>
 
     <a href="index.php" class="active">Carrusel</a>
-    <a href="diseño_ajustable.html" class="active">Diseño ajustable</a>
-    <a href="listas.html" class="active">Listas</a>
-    <a href="contenido.html" class="active">Contenido</a>
-    <a href="links.html" class="active">Links</a>
-    <a href="modelcaja.html" class="active">Modelo de Caja</a>
+    <a href="diseño_ajustable.html">Diseño ajustable</a>
+    <a href="listas.html">Listas</a>
+    <a href="contenido.html">Contenido</a>
+    <a href="links.html">Links</a>
+    <a href="modelcaja.html">Modelo de Caja</a>
     <a href="#">JavaScript</a>
     <a href="#">Slider</a>
     <a href="#">Perfil</a>
@@ -95,56 +93,49 @@ body{
 <div class="content">
 
 <h2>Bienvenido <?php echo $_SESSION['nombre']; ?></h2>
-<h3>Carrusel</h3>
+<h3>Carrusel PostgreSQL AJAX</h3>
 
 <br>
 
+<!-- CARRUSEL AJAX -->
 <div id="carouselExample" class="carousel slide" style="max-width:600px; margin:auto;">
+
   <div class="carousel-inner">
 
-<?php
-$active = true;
+    <div class="carousel-item active">
+      <div class="d-flex flex-column align-items-center">
 
-while($row = pg_fetch_assoc($result)){
-    echo '<div class="carousel-item '.($active ? 'active' : '').'">';
-
-    echo '
-    <div class="d-flex flex-column align-items-center">
-
-        <img src="'.$row['ruta'].'"
+        <img id="img"
              class="img-fluid rounded"
              style="max-height:400px; object-fit:contain;">
 
         <form action="delete.php" method="POST"
-              onsubmit="return confirm(\'¿Eliminar esta imagen?\');"
+              onsubmit="return confirm('¿Eliminar esta imagen?');"
               class="mt-3">
 
-            <input type="hidden" name="id" value="'.$row['id'].'">
-            <button class="btn btn-danger">🗑️ Eliminar</button>
+            <input type="hidden" name="id" id="img_id">
+            <button class="btn btn-danger">🗑 Eliminar</button>
         </form>
 
+      </div>
     </div>
-    ';
-
-    echo '</div>';
-    $active = false;
-}
-?>
 
   </div>
 
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+  <!-- BOTONES -->
+  <button class="carousel-control-prev" type="button" onclick="prev()">
     <span class="carousel-control-prev-icon"></span>
   </button>
 
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+  <button class="carousel-control-next" type="button" onclick="next()">
     <span class="carousel-control-next-icon"></span>
   </button>
+
 </div>
 
 <br><br>
 
-<!-- SUBIR -->
+<!-- SUBIR IMAGEN -->
 <form action="upload.php" method="POST" enctype="multipart/form-data">
     <input type="file" name="imagen" required>
     <button class="btn btn-success">Subir imagen</button>
@@ -153,6 +144,39 @@ while($row = pg_fetch_assoc($result)){
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- AJAX POSTGRES -->
+<script>
+let i = 0;
+
+function cargarImagen(){
+
+    fetch("get_image.php?index=" + i)
+    .then(res => res.json())
+    .then(data => {
+
+        if(!data || !data.ruta){
+            console.log("Imagen inválida");
+            return;
+        }
+
+        document.getElementById("img").src = data.ruta;
+        document.getElementById("img_id").value = data.id;
+    });
+}
+function next(){
+    i++;
+    cargarImagen();
+}
+
+function prev(){
+    if(i > 0) i--;
+    cargarImagen();
+}
+
+// cargar primera imagen
+cargarImagen();
+</script>
 
 </body>
 </html>

@@ -1,0 +1,20 @@
+<?php
+include "db.php";
+
+$index = isset($_GET['index']) ? intval($_GET['index']) : 0;
+
+$result = pg_query($conn, "SELECT id, ruta FROM imagenes ORDER BY id ASC");
+
+$imagenes = [];
+
+while($row = pg_fetch_assoc($result)){
+    $imagenes[] = $row;
+}
+
+if(count($imagenes) > 0){
+    $index = $index % count($imagenes);
+    echo json_encode($imagenes[$index]);
+}else{
+    echo json_encode(null);
+}
+?>
