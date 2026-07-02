@@ -1,5 +1,9 @@
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
+import Dashboard from "./components/Dashboard";
+import Grafica from "./components/Grafica";
+import Portfolio from "./components/Portfolio";
+import Historial from "./components/Historial";
 
 function App() {
 
@@ -21,25 +25,13 @@ function App() {
 
                     <div className="col-lg-10">
 
-                        <div className="card shadow">
+                        <Dashboard />
 
-                            <div className="card-body">
+                        <Grafica />
 
-                                <h2>
+                        <Portfolio />
 
-                                    Trading App React
-
-                                </h2>
-
-                                <p>
-
-                                    Proyecto de compra y venta de acciones.
-
-                                </p>
-
-                            </div>
-
-                        </div>
+                        <Historial />
 
                     </div>
 
