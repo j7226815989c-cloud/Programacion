@@ -1,0 +1,61 @@
+<div class="container">
+  <h1 class="text-muted display-2">
+    Hola mundo desde Angular
+  </h1>
+
+  <div class="text-center">
+    <button
+      class="btn btn-lg btn-outline-primary my-5"
+      (click)="getProducts()">
+
+      Mostrar productos desde el API
+
+    </button>
+  </div>
+
+  <h2 class="text-info text-center pb-5">
+    Vista de los productos
+  </h2>
+
+  <div class="row">
+
+    @for (prod of productList(); track prod.id) {
+
+      <div class="col-12 col-md-6 col-lg-3">
+
+        <div class="card mb-4 shadow border-primary">
+
+          <div class="card-body">
+
+            <h5 class="text-success">
+              {{ prod.nombre }}
+            </h5>
+
+            <h6 class="text-primary">
+              ${{ prod.precio }}
+            </h6>
+
+          </div>
+
+          <div class="card-footer">
+
+            <button
+              class="btn btn-sm btn-danger"
+              (click)="deleteProduct(prod.id)">
+
+              Eliminar
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    }
+
+  </div>
+</div>
+
+<router-outlet />
