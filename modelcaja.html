@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modelo de Caja</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+/* CAJA ORIGINAL */
+.caja {
+  background-color: orange;
+  width: 300px;
+  border: 15px solid green;
+  padding: 50px;
+  margin: 20px auto;
+}
+</style>
+
+</head>
+
+<body style="background:#f5f5f5;">
+
+<div class="container mt-5">
+
+    <h1 class="text-center mb-4">MODELO DE CAJA</h1>
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <!-- IMAGEN -->
+                <img src="imagenes\modelcaja.jpeg" 
+                     class="card-img-top"
+                     style="height:250px; object-fit:cover;">
+
+                <div class="card-body">
+
+                    <h3 class="card-title">Modelo de Caja CSS</h3>
+
+                    <p class="card-text">
+                        El modelo de caja describe cómo cada elemento HTML se representa como una caja con contenido, padding, border y margin.
+                    </p>
+
+                    <!-- BOTONES -->
+                    <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#ver">
+                        View
+                    </button>
+
+                    <a href="archivotxt/modelcaja.txt" target="_blank" class="btn btn-outline-secondary">
+                        Code
+                    </a>
+
+                    <!-- CONTENIDO -->
+                    <div id="ver" class="collapse mt-3">
+
+                        <h5>Explicación</h5>
+                        <p>El modelo de caja CSS es esencialmente una caja que envuelve cada elemento HTML.</p>
+                        <p>Consta de: contenido, padding, border y margin.</p>
+
+                        <h5>Ejemplo</h5>
+
+                        <div class="caja text-center">
+                            Este texto es el contenido del cuadro.<br>
+                            Padding: 50px<br>
+                            Margin: 20px<br>
+                            Border: 15px verde
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
